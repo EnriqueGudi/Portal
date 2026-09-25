@@ -1,0 +1,188 @@
+<button type="button" class="p-3 bg-amber-200" (click)="openModal($event,'')">abrir modal</button>
+<button type="button" class="p-3 bg-amber-200" (click)="GenerarPDF()">Generar PDF</button>
+<div class="grid grid-cols-1 md:grid-cols-4 gap-4 relative bg-white border border-gray-200 rounded-xl p-5 items-start">
+  <div>
+    <label class="block mb-2 text-sm font-bold text-gray-700 tracking-wide ml-1">
+      INPUT
+    </label>
+    <input type="text" [(ngModel)]="valueInput" placeholder="INPUT" class="MyInput"/>
+  </div>
+  <div>
+    <label class="block mb-2 text-sm font-bold text-gray-700 tracking-wide ml-1">
+      INPUT DISABLED
+    </label>
+    <input type="text" [(ngModel)]="valueInput" placeholder="INPUT" class="MyInput !bg-[#d3d3d3]" disabled/>
+  </div>
+  <div>
+    <label class="block mb-2 text-sm font-bold text-gray-700 tracking-wide ml-1">
+      SELECT
+    </label>
+    <select [(ngModel)]="valueSelected" class="MyInput">
+      <option [value]="null" disabled>Selecciona...</option>
+      <option [value]="'TODAS'">General</option>
+      <option [value]="'Adquisiciones'">Adquisiciones</option>
+    </select>
+  </div>
+
+  <div>
+    <label class="block mb-2 text-sm font-bold text-gray-700 tracking-wide ml-1">
+      INPUT FILE <span class="shrink-0 text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-800"> {{labelArchivo}} </span>
+    </label>
+    <label class="max-w-full w-full flex items-center gap-3 bg-white/80 backdrop-blur-md border border-gray-200 text-gray-800 py-3 px-4 rounded-2xl leading-tight cursor-pointer focus-within:ring-2 focus-within:ring-purple-500/50 focus-within:border-purple-500 hover:border-orange-400 hover:shadow-lg transition-all duration-200">
+      <svg class="w-5 h-5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+      </svg>
+      <span class="text-gray-400 text-sm truncate flex-1">
+        {{ ArchivoFile ? ArchivoFile.name : 'Seleccionar archivo...' }}
+      </span>
+      <input type="file" class="hidden" (change)="onFileChange($event,['application/pdf'],1,'ArchivoFile')"/>
+    </label>
+  </div>
+
+  <div>
+    <label class="block mb-2 text-sm font-bold text-gray-700 tracking-wide ml-1">
+      SELECT - BUSQUEDA
+    </label>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-select [(ngModel)]="selectedUsuario">
+
+        <div class="px-3 py-2 sticky top-0 bg-white z-10">
+          <input [(ngModel)]="searchTerm" (ngModelChange)="filterOptions()" class="MyInput" matInput placeholder="Buscar por nombre"  (keydown.space)="$event.stopPropagation()"/>
+        </div>
+
+        <mat-option *ngIf="filteredOptions.length == 0" disabled>
+          Sin resultados
+        </mat-option>
+
+        <mat-option *ngFor="let u of filteredOptions" [value]="u">
+          {{ u.nombre }}
+        </mat-option>
+
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div>
+    <label class="block mb-2 text-sm font-bold text-gray-700 tracking-wide ml-1">
+      CHECKBOX
+    </label>
+    <label class="inline-flex items-center gap-2 cursor-pointer">
+      <input [(ngModel)]="valueCheckBox" type="checkbox" class="peer sr-only"/>
+      <span class="MyCheckBox"></span>
+      <span class="text-sm text-gray-700 select-none">
+        Texto de la opción
+      </span>
+    </label>
+  </div>
+
+  <div>
+    <label class="block mb-2 text-sm font-bold text-gray-700 tracking-wide ml-1">
+      RADIO BUTTON
+    </label>
+    <div class="flex flex-wrap items-center gap-5">
+
+      <label class="inline-flex items-center gap-2 cursor-pointer">
+        <input [(ngModel)]="valueRadio" type="radio" name="opcionRadio" value="opcion1" class="peer sr-only"/>
+        <span class="MyRadioBtn"></span>
+        <span class="text-sm text-gray-700 select-none">Opción 1</span>
+      </label>
+
+      <label class="inline-flex items-center gap-2 cursor-pointer">
+        <input type="radio" [(ngModel)]="valueRadio" name="opcionRadio" value="opcion2" class="peer sr-only"/>
+        <span class="MyRadioBtn"></span>
+        <span class="text-sm text-gray-700 select-none">Opción 2</span>
+      </label>
+
+      <label class="inline-flex items-center gap-2 cursor-pointer">
+        <input type="radio" [(ngModel)]="valueRadio" name="opcionRadio" value="opcion3" class="peer sr-only"/>
+        <span class="MyRadioBtn"></span>
+        <span class="text-sm text-gray-700 select-none">Opción 3</span>
+      </label>
+
+    </div>
+  </div>
+
+  <div>
+    <label class="block mb-2 text-sm font-bold text-gray-700 tracking-wide ml-1">
+      MES / AÑO - BLOQUEO DE FECHAS
+    </label>
+    <input  [(ngModel)]="valueMesAnio" type="month" [min]="fechaMin" [max]="fechaMax" class="MyInput"/>
+  </div>
+
+  <div>
+    <label class="block mb-2 text-sm font-bold text-gray-700 tracking-wide ml-1">
+      INPUT BUSQUEDA
+    </label>
+    <div class="flex items-stretch border border-gray-200 rounded-2xl overflow-hidden hover:border-orange-400 focus-within:ring-2 focus-within:ring-purple-500/50 transition-all duration-200">
+      <input [(ngModel)]="valueBusqueda" type="text" placeholder="INPUT BUSQUEDA" class="MyInputBusq"/>
+      <button type="button" (click)="onBuscar()" class="MyBtnBusq">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div>
+    <label class="block mb-2 text-sm font-bold text-gray-700 tracking-wide ml-1">
+      TEXTAREA
+    </label>
+    <div class="flex items-stretch border border-gray-200 rounded-2xl overflow-hidden hover:border-orange-400 focus-within:ring-2 focus-within:ring-purple-500/50 transition-all duration-200">
+      <textarea [(ngModel)]="valueBusqueda" class="MyInput"></textarea>
+    </div>
+  </div>
+
+  <div class="md:col-span-4 overflow-auto">
+    <label class="block mb-2 text-sm font-bold text-gray-700 tracking-wide ml-1">
+      TABLA
+    </label>
+
+    <table class="w-full text-sm text-left mt-2 separacion">
+      <thead>
+        <tr class="degradado text-white">
+          <th class="py-3 px-4 font-bold tracking-wide">No. Empleado</th>
+          <th class="py-3 px-4 font-bold tracking-wide">Nombre</th>
+          <th class="py-3 px-4 font-bold tracking-wide">Departamento</th>
+          <th class="py-3 px-4 font-bold tracking-wide">Puesto</th>
+          <th class="py-3 px-4 font-bold tracking-wide text-center">Estatus</th>
+          <th class="py-3 px-4 font-bold tracking-wide text-center">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let item of listaDatos; let i = index"
+          class="border-t border-gray-200 hover:bg-orange-50 transition-colors duration-150"
+          [class.bg-gray-50]="i % 2 == 0" (click)="openModal($event,item)"
+        >
+          <td class="py-3 px-4 text-gray-800">{{ item.numEmpleado }}</td>
+          <td class="py-3 px-4 text-gray-800">{{ item.nombre }}</td>
+          <td class="py-3 px-4 text-gray-600">{{ item.departamento }}</td>
+          <td class="py-3 px-4 text-gray-600">{{ item.puesto }}</td>
+          <td class="py-3 px-4 text-center">
+            <span
+              class="inline-block px-3 py-1 rounded-full text-xs font-bold"
+              [class.bg-green-100]="item.activo"
+              [class.text-green-700]="item.activo"
+              [class.bg-red-100]="!item.activo"
+              [class.text-red-700]="!item.activo"
+            >
+              {{ item.activo ? 'Activo' : 'Inactivo' }}
+            </span>
+          </td>
+          <td class="py-3 px-4">
+            <div class="flex items-center justify-center gap-3">
+              <button type="button" (click)="onEditar(item)">Editar</button>
+              <button type="button">Boton 2</button>
+            </div>
+          </td>
+        </tr>
+
+        <tr *ngIf="listaDatos.length == 0">
+          <td colspan="6" class="py-8 px-4 text-center text-gray-400 text-sm">
+            No hay registros para mostrar
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
